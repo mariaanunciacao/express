@@ -58,8 +58,15 @@ app.put('/vetor', (req, res) => {
 app.delete('/vetor/:tarefa', (req, res) => {
     const tarefaParaDeletar = req.params.tarefa;
 
+
+    // Fique apenas com as tarefas cujo nome (v.tarefa) seja diferente 
+    // da tarefa que eu quero deletar (tarefaParaDeletar)". O item que
+    // for igual à tarefaParaDeletar é descartado.
     vetor = vetor.filter(v => v.tarefa !== tarefaParaDeletar);
     console.log(`Tarefa ${tarefaParaDeletar} removida.`);
+    // O método .filter() percorre todo o array original (vetor). Ele 
+    // cria um novo array contendo apenas os itens que passam em uma 
+    // condição (onde a função de teste retorna true).
 
     res.status(200).send({
         type: 'sucess',
