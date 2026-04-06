@@ -96,8 +96,77 @@ const create = async (req, res) => {
     }
 }
 
+const destroy = async (req, res) => {
+    try {
+        const { id } = req.params;
+    
+        const dados = await Tarefa.findByPk(id);
+
+        if(!dados) {
+            return res.status(404).send({
+                type: 'error',
+                message: 'Não encontrado',
+                data: []
+            });
+        }
+
+        await dados.destroy();
+
+        return res.status(200).send({
+            type: 'success',
+            message: 'Tarefa excluída',
+            data: []
+        });
+        
+    } catch (error) {
+
+        console.log(error.message);
+        res.status(500).send({
+            type: 'error',
+            message: 'Ocorreu um erro',
+            data: error.message 
+        });
+    }
+
+}
+
+const update = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const requisicao = req.body;
+        const dados = await Tarefa.findByPk(id);
+
+        if(!dados) {
+            return res.status(404).send({
+                type: 'error',
+                message: 'Não encontrado',
+                data: []
+            });
+        }
+        
+        Object.keys(requisicao).forEach(campo => dados[campo] = requisicao[campo]);
+        await dados.save();
+
+        return res.status(200).send({
+            type: 'success',
+            message: 'Tarefa atualizada',
+            data: dados
+        });
+
+    } catch (error) {
+
+        console.log(error.message);
+        res.status(500).send({
+            type: 'error',
+            message: 'Ocorreu um erro',
+            data: error.message 
+        });
+    }
+}
 export default {
     get,
     create,
-    getById
+    getById,
+    destroy,
+    update
 }

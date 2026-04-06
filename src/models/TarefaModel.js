@@ -17,13 +17,13 @@ const Tarefa = sequelize.define(
         type: DataTypes.BOOLEAN,
         defaultValue: false //equivalente a DEFAULT false no SQL
     }
-},
-{
-    freezeTableName: true, //impede que o Sequelize pluralize o nome da tabela
-    timestamps: true, //adiciona as colunas createdAt e updatedAt automaticamente
-    createdAt: 'created_at',
-    updatedAt: 'updated_at' 
-}
+    },
+    {
+        freezeTableName: true, //impede que o Sequelize pluralize o nome da tabela
+        timestamps: true, //adiciona as colunas createdAt e updatedAt automaticamente
+        createdAt: 'created_at', //renomeia a coluna createdAt para created_at
+        updatedAt: 'updated_at' //renomeia a coluna updatedAt para updated_at   
+    }
 );
 
 export default Tarefa;
