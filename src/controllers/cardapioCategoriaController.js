@@ -5,20 +5,31 @@ import Categoria from "../models/CategoriaModel.js";
 const getByCategoria = async (req, res) => {
     try {
         const { idCategoria } = req.params;
+        const categoria = await Categoria.findByPk(idCategoria, {
+            attributes: ['id', 'nome_categoria']
+        });
+
+        if (!categoria) {
+            return res.status(404).send({
+                type: 'error',
+                message: 'Categoria não encontrada',
+                data: null
+            });
+        }
+
         const dados = await Cardapio.findAll({
             where: {
                 idCategoria: idCategoria
-            },
-            include: [{
-                model: Categoria,
-                as: 'categorias'
-            }]
+            }
         });
 
         return res.status(200).send({
             type: 'success',
             message: 'Cardápios encontrados',
-            data: dados
+            data: {
+                categoria: categoria.nome_categoria,
+                cardapios: dados
+            }
         });
 
     } catch (error) {

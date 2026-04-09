@@ -3,9 +3,19 @@ import Pedido from "../models/PedidoModel.js";
 
 const getPedidosPendentes = async (_req, res) => {
     try {
+        await Pedido.update(
+            { idEntregador: null },
+            {
+                where: {
+                    idStatus: 1
+                }
+            }
+        );
+
         const dados = await Pedido.findAll({
             where: {
-                idStatus: 1
+                idStatus: 1,
+                idEntregador: null
             }
         });
 
