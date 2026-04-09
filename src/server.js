@@ -7,19 +7,6 @@ const app = express();
 
 app.use(express.json()); 
 
-let vetor = [
-    {
-        tarefa: 'teste',
-        data: new Date(Date.now()),
-        finalizado: true
-    },
-    {
-        tarefa: 'teste2',
-        data: new Date(Date.now()),
-        finalizado: false
-    }
-]
-
 routes(app);
 
 app.listen(process.env.API_PORT, () => {

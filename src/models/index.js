@@ -1,7 +1,34 @@
 //criando uma função que se autochama
-import Tarefa from './TarefaModel.js';
-import TarefaUsuario from './tarefaUsuario.js';
-(async () => {
-    await Tarefa.sync({ force: true });
-    await TarefaUsuario.sync();
-})();
+import Pessoa from './PessoaModel.js';
+import Cupom from './CupomModel.js';
+import Categoria from './CategoriaModel.js';
+import Endereco from './EnderecoModel.js';
+import Entregador from './EntregadorModel.js';
+import Pagamento from './PagamentoModel.js';
+import Restaurante from './RestauranteModel.js';
+import Status from './StatusModel.js';
+import TipoPagamento from './TipoPagamentoModels.js';
+import Pedido from './PedidoModel.js';
+import RestauranteEndereco from './RestauranteEnderecoModel.js';
+import Cardapio from './CardapioModel.js';
+import Carrinho from './CarrinhoModel.js';
+import Favorito from './FavoritoModel.js';  
+import Avaliacao from './AvaliacaoModel.js';    
+
+// (async () => {
+//     await Pessoa.sync({ force: true });
+//     await Cupom.sync({ force: true });
+//     await Categoria.sync({ force: true });
+//     await Endereco.sync({ force: true });
+//     await Entregador.sync({ force: true });
+//     await Status.sync({ force: true });
+//     await TipoPagamento.sync({ force: true });
+//     await Pagamento.sync({ force: true });
+//     await Restaurante.sync({ force: true });
+//     await Pedido.sync({ force: true });
+//     await RestauranteEndereco.sync({ force: true});
+//     await Cardapio.sync({ force: true });
+//     await Carrinho.sync({ force: true });
+//     await Favorito.sync({ force: true });
+//     await Avaliacao.sync({ force: true });
+// })();

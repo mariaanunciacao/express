@@ -1,12 +1,13 @@
-import Tarefa from '../models/TarefaModel.js';
+import Endereco from "../models/EnderecoModel.js";
 
+//GET ALL
 const get = async (req, res) => {
     try {
-        const dados = await Tarefa.findAll();
+        const dados = await Endereco.findAll();
 
         return res.status(200).send({
-            type: 'success',
-            message: 'Tarefas encontradas',
+            type: 'sucess',
+            message: 'Endereços encontrados',
             data: dados
         });
 
@@ -15,37 +16,38 @@ const get = async (req, res) => {
         res.status(500).send({
             type: 'error',
             message: 'Ocorreu um erro',
-            data: error.message 
+            data: error.message
         });
 
     }
 }
-//get by id, retorna apenas a tarefa com o id especificado
+
+//GET BY ID
 const getById = async (req, res) => {
     try {
         const { id } = req.params;
         //se o id for all retorna todos os elementos da tabela
         if(id === 'all') {
-            const dados = await Tarefa.findAll();
+            const dados = await Endereco.findAll();
 
             return res.status(200).send({
                 type: 'success',
-                message: 'Tarefas encontradas',
+                message: 'Endereços encontrados',
                 data: dados
             });
         }
-        const dados = await Tarefa.findByPk(id);
+        const dados = await Endereco.findByPk(id);
         
         if(!dados) {
             return res.status(404).send({
                 type: 'error',
-                message: 'Tarefa não encontrada',
+                message: 'Endereco não encontrado',
                 data: null
             });
         }
         return res.status(200).send({
             type: 'success',
-            message: 'Tarefa encontrada',
+            message: 'Endereco encontrado',
             data: dados
         });
 
@@ -60,29 +62,78 @@ const getById = async (req, res) => {
     }
 }
 
+//POST
 const create = async (req, res) => {
     try {
         const {
-            descricao,
-            finalizado,
+            logradouro,
+            cep,
+            numero,
+            cidade,
+            estado,
+            idPessoa
         } = req.body;
 
-        if(!descricao) {
+        if(logradouro === undefined || logradouro === null) {
             return res.status(400).send({
                 type: 'error',
-                message: 'Campos descrição não preenchido',
+                message: 'Campo logradouro não preenchido',
                 data: null
             });
         }
 
-        const retorno = await Tarefa.create({
-            descricao,
-            finalizado
+        if(cep === undefined || cep === null) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'Campo cep não preenchido',
+                data: null
+            });
+        }
+
+        if(numero === undefined || numero === null) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'Campo numero não preenchido',
+                data: null
+            });
+        }
+
+        if(cidade === undefined || cidade === null) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'Campo cidade não preenchido',
+                data: null
+            });
+        }
+
+        if(estado === undefined || estado === null) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'Campo estado não preenchido',
+                data: null
+            });
+        }
+
+        if(idPessoa === undefined || idPessoa === null) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'Campo idPessoa não preenchido',
+                data: null
+            });
+        }
+
+        const retorno = await Endereco.create({
+            logradouro,
+            cep,
+            numero,
+            cidade,
+            estado,
+            idPessoa
         });
 
         return res.status(201).send({
             type: 'success',
-            message: 'Tarefa criada',
+            message: 'Endereco criado',
             data: retorno
         });
 
@@ -96,16 +147,17 @@ const create = async (req, res) => {
     }
 }
 
+//DELETE
 const destroy = async (req, res) => {
     try {
         const { id } = req.params;
     
-        const dados = await Tarefa.findByPk(id);
+        const dados = await Endereco.findByPk(id);
 
         if(!dados) {
             return res.status(404).send({
                 type: 'error',
-                message: 'Não encontrado',
+                message: 'Endereco não encontrado',
                 data: []
             });
         }
@@ -114,7 +166,7 @@ const destroy = async (req, res) => {
 
         return res.status(200).send({
             type: 'success',
-            message: 'Tarefa excluída',
+            message: 'Endereco excluído',
             data: []
         });
         
@@ -126,21 +178,34 @@ const destroy = async (req, res) => {
             message: 'Ocorreu um erro',
             data: error.message 
         });
+
     }
 
 }
 
+//PATCH BY ID
 const update = async (req, res) => {
     try {
         const { id } = req.params;
         const requisicao = req.body;
-        const dados = await Tarefa.findByPk(id);
+        const dados = await Endereco.findByPk(id);
+        const camposPermitidos = ['logradouro', 'cep', 'numero', 'cidade', 'estado', 'idPessoa'];
 
         if(!dados) {
             return res.status(404).send({
                 type: 'error',
-                message: 'Não encontrado',
+                message: 'Endereco não encontrado',
                 data: []
+            });
+        }
+
+        const camposInvalidos = Object.keys(requisicao).filter(campo => !camposPermitidos.includes(campo));
+
+        if(camposInvalidos.length > 0) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'Campos inválidos para atualização',
+                data: camposInvalidos
             });
         }
         
@@ -149,7 +214,7 @@ const update = async (req, res) => {
 
         return res.status(200).send({
             type: 'success',
-            message: 'Tarefa atualizada',
+            message: 'Endereco atualizado',
             data: dados
         });
 
@@ -161,6 +226,7 @@ const update = async (req, res) => {
             message: 'Ocorreu um erro',
             data: error.message 
         });
+
     }
 }
 export default {
