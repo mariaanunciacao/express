@@ -18,6 +18,10 @@ const Cardapio = sequelize.define(
         preco: {
             type: DataTypes.DECIMAL,
             allowNull: false
+        },
+        arquivo: {
+            type: DataTypes.STRING(200),
+            allowNull: true
         }
     },
     {

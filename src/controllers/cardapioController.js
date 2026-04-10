@@ -1,4 +1,5 @@
 import Cardapio from '../models/CardapioModel.js';
+import fileUpload from '../utils/fileUpload.js';
 
 //GET ALL
 const get = async (req, res) => {
@@ -62,6 +63,63 @@ const getById = async (req, res) => {
     }
 }
 
+
+//GET FILE BY ID OU ALL
+const getFileById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        //se o id for all retorna apenas os registros que possuem arquivo
+        if(id === 'all') {
+            const registros = await Cardapio.findAll({
+                attributes: ['id', 'arquivo']
+            });
+
+            const dados = registros.filter((item) => item.arquivo);
+
+            return res.status(200).send({
+                type: 'success',
+                message: 'Arquivos de cardápios encontrados',
+                data: dados
+            });
+        }
+
+        const idNumerico = id ? id.replace(/\D/g, '') : null;
+        if(!idNumerico) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'ID inválido',
+                data: null
+            });
+        }
+
+        const dados = await Cardapio.findByPk(idNumerico, {
+            attributes: ['id', 'arquivo']
+        });
+        
+        if(!dados || !dados.arquivo) {
+            return res.status(404).send({
+                type: 'error',
+                message: 'Arquivo de cardápio não encontrado',
+                data: null
+            });
+        }
+        return res.status(200).send({
+            type: 'success',
+            message: 'Arquivo de cardápio encontrado',
+            data: dados
+        });
+
+    } catch (error) {
+
+        res.status(500).send({
+            type: 'error',
+            message: 'Ocorreu um erro',
+            data: error.message 
+        });
+
+    }
+}
+
 //POST
 const create = async (req, res) => {
     try {
@@ -111,6 +169,17 @@ const create = async (req, res) => {
             idRestaurante,
         });
 
+        if(req.files && req.files.arquivo) {
+            let upload = await fileUpload(req.files.arquivo, {
+                id: retorno.id,
+                tipo: 'imagem',
+                tabela: 'cardapios'
+            });
+
+            retorno.arquivo = upload.path;
+            await retorno.save();
+        }
+
         return res.status(201).send({
             type: 'success',
             message: 'Cardápio criado',
@@ -131,9 +200,7 @@ const create = async (req, res) => {
 const destroy = async (req, res) => {
     try {
         const { id } = req.params;
-    
         const dados = await Cardapio.findByPk(id);
-
         if(!dados) {
             return res.status(404).send({
                 type: 'error',
@@ -141,26 +208,49 @@ const destroy = async (req, res) => {
                 data: []
             });
         }
-
         await dados.destroy();
-
         return res.status(200).send({
             type: 'success',
             message: 'Cardápio excluído',
             data: []
         });
-        
     } catch (error) {
-
         console.log(error.message);
         res.status(500).send({
             type: 'error',
             message: 'Ocorreu um erro',
             data: error.message 
         });
-
     }
+}
 
+//DELETE FILE BY ID DO CARDAPIO
+const deleteFile = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const dados = await Cardapio.findByPk(id);
+        if(!dados) {
+            return res.status(404).send({
+                type: 'error',
+                message: 'Cardápio não encontrado',
+                data: []
+            });
+        }
+        dados.arquivo = null;
+        await dados.save();
+        return res.status(200).send({
+            type: 'success',
+            message: 'Arquivo do cardápio excluído',
+            data: []
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({
+            type: 'error',
+            message: 'Ocorreu um erro',
+            data: error.message 
+        });
+    }
 }
 
 //PATCH BY ID
@@ -209,10 +299,72 @@ const update = async (req, res) => {
 
     }
 }
+
+//PATCH FILE BY ID
+const updateFile = async (req, res) => {
+    try {
+        const id = req.params.id ? req.params.id.replace(/\D/g, '') : null;
+
+        if(!id) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'ID inválido',
+                data: null
+            });
+        }
+
+        const dado = await Cardapio.findByPk(id);
+
+        if(!dado) {
+            return res.status(404).send({
+                type: 'error',
+                message: 'Arquivo de cardápio não encontrado',
+                data: []
+            });
+        }
+
+        if (!req.files || !req.files.arquivo) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'Arquivo não enviado',
+                data: null
+            });
+        }
+
+        const upload = await fileUpload(req.files.arquivo, {
+            id: dado.id,
+            tipo: 'imagem',
+            tabela: 'cardapios'
+        });
+
+        dado.arquivo = upload.path;
+
+        await dado.save();
+
+        return res.status(200).send({
+            type: 'success',
+            message: 'Arquivo de cardápio atualizado',
+            data: dado
+        });
+
+    } catch (error) {
+
+        console.log(error.message);
+        res.status(500).send({
+            type: 'error',
+            message: 'Ocorreu um erro',
+            data: error.message 
+        });
+
+    }
+}
 export default {
     get,
     create,
     getById,
     destroy,
-    update
+    update,
+    deleteFile,
+    updateFile,
+    getFileById
 }

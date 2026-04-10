@@ -6,4 +6,7 @@ export default (app) => {
     app.post('/cardapio/create', cardapioController.create);
     app.get('/cardapio/get-all', cardapioController.get);
     app.get('/cardapio/get/:id', cardapioController.getById);
+    app.delete('/cardapio/delete-file/:id', cardapioController.deleteFile);
+    app.patch('/cardapio/update-file/:id', cardapioController.updateFile);
+    app.get('/cardapio/get-file/:id', cardapioController.getFileById);
 }
