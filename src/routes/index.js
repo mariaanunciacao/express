@@ -20,6 +20,7 @@ import cardapioByRestauranteRoute from './cardapioByRestauranteRoute.js';
 import pedidoByStatusRoute from './pedidoByStatusRoute.js';
 import finalizarPedidoRoute from './finalizarPedidoRoute.js';
 import pedidoPendenteRoute from './pedidoPendenteRoute.js';
+import usuarioRoute from './usuarioRoute.js';
 
 function Routes(app) {
     avaliacaoRoute(app)
@@ -44,6 +45,7 @@ function Routes(app) {
     pedidoByStatusRoute(app)
     finalizarPedidoRoute(app)
     pedidoPendenteRoute(app)
+    usuarioRoute(app)
 }
 
 export default Routes
