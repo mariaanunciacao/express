@@ -21,6 +21,9 @@ import pedidoByStatusRoute from './pedidoByStatusRoute.js';
 import finalizarPedidoRoute from './finalizarPedidoRoute.js';
 import pedidoPendenteRoute from './pedidoPendenteRoute.js';
 import usuarioRoute from './usuarioRoute.js';
+import perfilRoute from './perfilRoute.js';
+import usuarioPerfilRoute from './usuarioPerfilRoute.js';
+import admSelctUserPerfilRoute from './admSelctUserPerfilRoute.js';
 
 function Routes(app) {
     avaliacaoRoute(app)
@@ -46,6 +49,9 @@ function Routes(app) {
     finalizarPedidoRoute(app)
     pedidoPendenteRoute(app)
     usuarioRoute(app)
+    perfilRoute(app)
+    usuarioPerfilRoute(app)
+    admSelctUserPerfilRoute(app)
 }
 
 export default Routes

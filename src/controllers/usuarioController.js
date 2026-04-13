@@ -2,6 +2,15 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import Usuario from '../models/UsuarioModel.js';
 
+const getAuthToken = (authorization) => {
+    if (!authorization) {
+        return null;
+    }
+
+    const [scheme, value] = authorization.split(' ');
+    return value ? value : scheme;
+};
+
 const register = async (req, res) => {
     try {
         const { email, nome, password } = req.body;
@@ -142,7 +151,36 @@ const login = async (req, res) => {
     }
 };
 
+//envaindotoken pelo authorization header, o getUserByToken é uma função que pode ser usada para obter as informações do usuário a partir do token JWT enviado na requisição. Ele decodifica o token e retorna os dados do usuário contidos nele.
+const getUserByToken = async (req, res) => {
+    try {
+        const token = getAuthToken(req.headers.authorization);
+
+        if (!token) {
+            return res.status(401).send({
+                type: 'error',
+                message: 'Token não identificado',
+                data: null
+            });
+        }
+
+        const resposta = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+
+        return res.json({
+            data: resposta
+        })
+    } catch (error) {
+        console.log(error.message);
+        return res.status(500).send({
+            type: 'error',
+            message: 'Ocorreu um erro',
+            data: error.message
+        });
+    }
+};
+
 export default {
     register,
-    login
+    login,
+    getUserByToken,
 };

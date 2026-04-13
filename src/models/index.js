@@ -1,5 +1,8 @@
 //criando uma função que se autochama
 import Pessoa from './PessoaModel.js';
+import Usuario from './UsuarioModel.js';
+import Perfil from './PerfilModel.js';
+import UsuarioPerfil from './UsuarioPerfilModel.js';
 import Cupom from './CupomModel.js';
 import Categoria from './CategoriaModel.js';
 import Endereco from './EnderecoModel.js';
@@ -17,6 +20,9 @@ import Avaliacao from './AvaliacaoModel.js';
 
 // (async () => {
 //     await Pessoa.sync({ force: true });
+//     await Usuario.sync({ force: true });
+//     await Perfil.sync({ force: true });
+//     await UsuarioPerfil.sync({ force: true });
 //     await Cupom.sync({ force: true });
 //     await Categoria.sync({ force: true });
 //     await Endereco.sync({ force: true });
