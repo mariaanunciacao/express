@@ -1,13 +1,34 @@
 import Avaliacao from '../models/AvaliacaoModel.js';
+import Pedido from '../models/PedidoModel.js';
 
 //GET ALL
 const get = async (req, res) => {
     try {
-        const dados = await Avaliacao.findAll();
+        const idPessoaMiddleware = req.idPessoa;
+        const idPessoaQuery = req.query?.idPessoa;
+        const idPessoa = idPessoaMiddleware ?? idPessoaQuery;
+
+        const includePedido = {
+            model: Pedido,
+            as: 'avaliacpes',
+            attributes: ['id', 'idPessoa']
+        };
+
+        if (idPessoa !== undefined && idPessoa !== null && idPessoa !== '') {
+            includePedido.where = {
+                idPessoa: Number(idPessoa)
+            };
+            includePedido.required = true;
+        }
+
+        const dados = await Avaliacao.findAll({
+            attributes: ['id', 'nota', 'comentario'],
+            include: [includePedido]
+        });
 
         return res.status(200).send({
-            type: 'success',
-            message: 'Avaliações encontradas',
+            type: 'sucess',
+            message: 'Avaliacoes encontradas',
             data: dados
         });
 
@@ -16,7 +37,7 @@ const get = async (req, res) => {
         res.status(500).send({
             type: 'error',
             message: 'Ocorreu um erro',
-            data: error.message 
+            data: error.message
         });
 
     }
