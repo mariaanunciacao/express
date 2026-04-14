@@ -1,4 +1,4 @@
-import jwt from 'jsowebtoken';
+import jwt from 'jsonwebtoken';
 import Usuario from '../models/UsuarioModel.js';
 import UsuarioPerfil from '../models/UsuarioPerfilModel.js';
 import Perfil from '../models/PerfilModel.js';
@@ -23,7 +23,7 @@ const verifyTokenPerfilForGetPessoas = async(req, res, next) =>{
                 type: 'error',
                 message: 'Usuario nao identificado',
                 data: null
-            })
+            });
         }
         //jwt.verify é uma função da biblioteca jsonwebtoken que verifica a assinatura do token
         const usuario = jwt.verify(token, process.env.JWT_SECRET || 'secret')
@@ -52,11 +52,15 @@ const verifyTokenPerfilForGetPessoas = async(req, res, next) =>{
             });
         }
 
+
         next();
     }catch {
         res.status(500).send({
-            
-        })
-
+            type: 'error',
+            message: 'Ops! Ocorreu um erro!',
+            data: error.message
+        });
     }
 }
+
+export default verifyTokenPerfilForGetPessoas;

@@ -3,11 +3,30 @@ import Endereco from "../models/EnderecoModel.js";
 //GET ALL
 const get = async (req, res) => {
     try {
-        const dados = await Endereco.findAll();
+        const idPessoaMiddleware = req.idPessoa;
+        const idPessoaQuery = req.query?.idPessoa;
+        const idPessoa = idPessoaMiddleware ?? idPessoaQuery;
+
+        const where = {};
+
+        if (idPessoa !== undefined && idPessoa !== null && idPessoa !== '') {
+            where.idPessoa = Number(idPessoa);
+        }
+
+        const dados = await Endereco.findAll({
+            where,
+            attributes: ['id', 'logradouro', 'cep', 'numero', 'created_at', 'updated_at'],
+            // include: [
+            //     {
+            //         association: 'restaurantes',
+            //         attributes: ['id', 'nome_restaurante']
+            //     }
+            // ]
+        });
 
         return res.status(200).send({
             type: 'sucess',
-            message: 'Endereços encontrados',
+            message: 'Enderecos encontrados',
             data: dados
         });
 

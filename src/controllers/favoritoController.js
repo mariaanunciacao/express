@@ -3,7 +3,26 @@ import Favorito from '../models/FavoritoModel.js';
 //GET ALL
 const get = async (req, res) => {
     try {
-        const dados = await Favorito.findAll();
+        const idPessoaMiddleware = req.idPessoa;
+        const idPessoaQuery = req.query?.idPessoa;
+        const idPessoa = idPessoaMiddleware ?? idPessoaQuery;
+
+        const where = {};
+
+        if (idPessoa !== undefined && idPessoa !== null && idPessoa !== '') {
+            where.idPessoa = Number(idPessoa);
+        }
+
+        const dados = await Favorito.findAll({
+            where,
+            attributes: ['id', 'created_at', 'updated_at'],
+            include: [
+                {
+                    association: 'restaurantes',
+                    attributes: ['id', 'nome_restaurante']
+                }
+            ]
+        });
 
         return res.status(200).send({
             type: 'sucess',

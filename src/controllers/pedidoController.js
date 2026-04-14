@@ -1,9 +1,29 @@
 import Pedido from '../models/PedidoModel.js';
+import Cupom from '../models/CupomModel.js';
 
 //GET ALL
 const get = async (req, res) => {
     try {
-        const dados = await Pedido.findAll();
+        const idPessoaMiddleware = req.idPessoa;
+        const idPessoaQuery = req.query?.idPessoa;
+        const idPessoa = idPessoaMiddleware ?? idPessoaQuery;
+
+        const where = {};
+
+        if (idPessoa !== undefined && idPessoa !== null && idPessoa !== '') {
+            where.idPessoa = Number(idPessoa);
+        }
+
+        const dados = await Pedido.findAll({
+            where,
+            attributes: ['id', 'observacao', 'idStatus', 'created_at', 'updated_at'],
+            include: [
+                {
+                    association: 'cupons',
+                    attributes: ['id', 'condicao']
+                }
+            ]
+        });
 
         return res.status(200).send({
             type: 'sucess',
