@@ -1,5 +1,70 @@
 import Restaurante from '../models/RestauranteModel.js';
 
+import axios from 'axios';
+
+const api = axios.create({
+    baseURL: 'https://places.googleapis.com/v1/places:searchNearby',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-Goog-Api-Key': process.env.GOOGLE_API_KEY,
+        'X-Goog-FieldMask': 'places.displayName,places.formattedAddress'
+    }
+});
+
+const searchNearby = async (req, res) => {
+    try {
+        const { latitude, longitude } = req.body;
+
+        if (latitude === undefined || longitude === undefined) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'Latitude e longitude são obrigatórias',
+                data: null
+            });
+        }
+
+        const lat = Number(latitude);
+        const lng = Number(longitude);
+
+        if (isNaN(lat) || isNaN(lng)) {
+            return res.status(400).send({
+                type: 'error',
+                message: 'Latitude e longitude devem ser números válidos',
+                data: null
+            });
+        }
+
+        const response = await api.post('', {
+            includedTypes: ['restaurant'],
+            maxResultCount: 10,
+            locationRestriction: {
+                circle: {
+                    center: {
+                        latitude: lat,
+                        longitude: lng
+                    },
+                    radius: 1500.0
+                }
+            }
+        });
+
+        return res.status(200).send({
+            type: 'success',
+            message: 'Restaurantes próximos encontrados',
+            data: response.data
+        });
+
+    } catch (error) {
+        console.log(error.response?.data || error.message);
+
+        return res.status(500).send({
+            type: 'error',
+            message: 'Erro ao buscar restaurantes',
+            data: error.response?.data || error.message
+        });
+    }
+};
+
 //GET ALL
 const get = async (req, res) => {
     try {
@@ -224,5 +289,6 @@ export default {
     create,
     getById,
     destroy,
-    update
+    update,
+    searchNearby
 }

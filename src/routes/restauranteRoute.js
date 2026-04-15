@@ -6,4 +6,5 @@ export default (app) => {
     app.post('/restaurante/create', restauranteController.create);
     app.get('/restaurante/get-all', restauranteController.get);
     app.get('/restaurante/get/:id', restauranteController.getById);
+    app.post('/restaurante-api/nearby', restauranteController.searchNearby);
 }
